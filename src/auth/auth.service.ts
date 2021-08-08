@@ -1,4 +1,4 @@
-import { Body, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 
 export interface User {
   name: string;
@@ -11,21 +11,24 @@ export interface User {
 export class AuthService {
   users: User[] = [];
 
-  register(@Body() user): User {
+  register(user: User): User | HttpStatus {
+    if (this.users.includes(user)) {
+      return 404;
+    }
     this.users.push(user);
     return user;
   }
 
-  login(@Body() candidate): User | HttpStatus {
+  login(candidate): User | HttpStatus {
     const user = this.users.find((user) => {
       return (
         user.name === candidate.name && user.password === candidate.password
       );
     });
-    return user ? user : 200;
+    return user ? user : 404;
   }
 
-  test(@Body() body: User): string {
-    return body.sex;
+  logout(): string {
+    return 'Logged out successfully';
   }
 }
