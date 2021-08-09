@@ -1,25 +1,43 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
-import { User } from '../user/entities/user.entity';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { UserDto } from '../user/dto/user.dto';
+import { UserService } from '../user/user.service';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class AuthService {
-  users: User[] = [];
+  constructor(
+    private jwtService: JwtService,
+    private userService: UserService,
+  ) {}
 
-  register(user: User): User | HttpStatus {
-    if (this.users.includes(user)) {
-      return 404;
+  async register(userDto: UserDto) {
+    const candidate = await this.userService.getUserByLogin(userDto.login);
+    if (candidate) {
+      throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
     }
-    this.users.push(user);
-    return user;
+    const hashPassword = await bcrypt.hash(userDto.password, 10);
+    const user = await this.userService.create({
+      ...userDto,
+      password: hashPassword,
+    });
+    return this.generateToken(user);
   }
 
-  login(candidate): User | HttpStatus {
-    const user = this.users.find((user) => {
-      return (
-        user.login === candidate.login && user.password === candidate.password
-      );
-    });
-    return user ? user : 404;
+  async generateToken(user) {
+    const payload = {
+      login: user.login,
+      id: user.id,
+    };
+    return this.jwtService.sign(payload);
+  }
+
+  async login(userDto: UserDto) {
+    const candidate = await this.userService.getUserByLogin(userDto.login);
+    if (candidate && bcrypt.compare(userDto.password, candidate.password)) {
+      return candidate;
+    }
+    throw new HttpException('Wrong password', HttpStatus.BAD_REQUEST);
   }
 
   logout(): string {
