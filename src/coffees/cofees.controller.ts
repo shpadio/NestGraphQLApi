@@ -7,13 +7,13 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { CofeesService } from './cofee.service';
+import { CoffeesService } from './cofees.service';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 
 @Controller('coffees')
-export class CofeesController {
-  constructor(private readonly coffeesService: CofeesService) {}
+export class CoffeesController {
+  constructor(private readonly coffeesService: CoffeesService) {}
 
   @Get()
   async findAll() {
@@ -40,7 +40,6 @@ export class CofeesController {
 
   @Delete(':id')
   async delete(@Param('id') id: string) {
-    console.log('here');
     return await this.coffeesService.remove(id);
   }
 }

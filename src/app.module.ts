@@ -3,7 +3,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CofeeModule } from './coffees/cofee.module';
+import { CoffeesModule } from './coffees/cofees.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { CofeeModule } from './coffees/cofee.module';
       autoLoadEntities: true,
       synchronize: true,
     }),
-    CofeeModule,
+    CoffeesModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

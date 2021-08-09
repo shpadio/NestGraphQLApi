@@ -6,18 +6,24 @@ import { CreateCoffeeDto } from './dto/create-coffee.dto';
 import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 
 @Injectable()
-export class CofeesService {
+export class CoffeesService {
   constructor(
     @InjectRepository(Coffee)
     private readonly coffeeRepository: Repository<Coffee>,
   ) {}
 
   async findAll() {
-    return await this.coffeeRepository.find({});
+    return await this.coffeeRepository.find({
+      relations: ['flavors'],
+    });
   }
 
   async findOne(id: string) {
-    return await this.coffeeRepository.findOne(id);
+    const coffee = await this.coffeeRepository.findOne(id);
+    if (!coffee) {
+      throw new NotFoundException('Coffee is not found');
+    }
+    return coffee;
   }
 
   async create(createCoffeeDto: CreateCoffeeDto) {
@@ -39,7 +45,6 @@ export class CofeesService {
 
   async remove(id: string) {
     const coffee = await this.coffeeRepository.findOne(id);
-    console.log(coffee, 'coffee');
     return await this.coffeeRepository.remove(coffee);
   }
 }

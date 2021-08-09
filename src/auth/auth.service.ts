@@ -1,11 +1,5 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-
-export interface User {
-  name: string;
-  password: string;
-  age: number;
-  sex: string;
-}
+import { User } from '../user/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -22,7 +16,7 @@ export class AuthService {
   login(candidate): User | HttpStatus {
     const user = this.users.find((user) => {
       return (
-        user.name === candidate.name && user.password === candidate.password
+        user.login === candidate.login && user.password === candidate.password
       );
     });
     return user ? user : 404;
