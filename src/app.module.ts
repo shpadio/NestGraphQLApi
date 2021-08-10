@@ -5,10 +5,16 @@ import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoffeesModule } from './coffees/cofees.module';
 import { UserModule } from './user/user.module';
+import { TeasModule } from './teas/teas.module';
+import { GraphQLModule } from '@nestjs/graphql';
 
 @Module({
   imports: [
     AuthModule,
+    GraphQLModule.forRoot({
+      autoSchemaFile: 'schema.gql',
+      debug: true,
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -21,6 +27,7 @@ import { UserModule } from './user/user.module';
     }),
     CoffeesModule,
     UserModule,
+    TeasModule,
   ],
   controllers: [AppController],
   providers: [AppService],
