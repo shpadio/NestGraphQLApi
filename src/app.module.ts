@@ -5,8 +5,8 @@ import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoffeesModule } from './coffees/cofees.module';
 import { UserModule } from './user/user.module';
-import { TeasModule } from './teas/teas.module';
 import { GraphQLModule } from '@nestjs/graphql';
+import { PetsModule } from './pets/pets.module';
 
 @Module({
   imports: [
@@ -27,7 +27,7 @@ import { GraphQLModule } from '@nestjs/graphql';
     }),
     CoffeesModule,
     UserModule,
-    TeasModule,
+    PetsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
